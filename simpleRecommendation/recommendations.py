@@ -135,7 +135,7 @@ def getRecommendedItems(prefs,itemMatch,user):
   rankings.reverse( )
   return rankings
 
-def loadMovieLens(path='./movielens',file='/u1.base'):
+def loadMovieLens(path='../movielens',file='../u1.base'):
   # Get movie titles
   movies={}
   for line in open(path+'/u.item'):
@@ -152,9 +152,9 @@ def loadMovieLens(path='./movielens',file='/u1.base'):
 
 if __name__=='__main__':
 	trainPrefs = loadMovieLens()
-	testPrefs = loadMovieLens(file='/u1.test')
+	testPrefs = loadMovieLens(file='../u1.test')
 	movies={}
-	for line in open('./movielens/u.item'):
+	for line in open('../movielens/u.item'):
 		(id,title)=line.split('|')[0:2]
 		movies[id]=title
 	for user in testPrefs:
