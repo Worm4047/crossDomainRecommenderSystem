@@ -50,23 +50,23 @@ def topMatches(prefs,person,n=5,similarity=sim_pearson):
 
 # Gets recommendations for a person by using a weighted average
 # of every other user's rankings
-def getRecommendations(prefs,person,similarity=sim_pearson):
+def getRecommendations(domain1,domain2,person,similarity=sim_pearson):
   totals={}
   simSums={}
-  for other in prefs:
+  for other in domain2:
     # don't compare me to myself
     if other==person: continue
-    sim=similarity(prefs,person,other)
+    sim=similarity(domain2,person,other)
 
     # ignore scores of zero or lower
     if sim<=0: continue
-    for item in prefs[other]:
+    for item in domain1[other]:
 	    
       # only score movies I haven't seen yet
-      if item not in prefs[person] or prefs[person][item]==0:
+      if item not in domain1[person] or domain1[person][item]==0:
         # Similarity * Score
         totals.setdefault(item,0)
-        totals[item]+=prefs[other][item]*sim
+        totals[item]+=domain1[other][item]*sim
         # Sum of similarities
         simSums.setdefault(item,0)
         simSums[item]+=sim
@@ -79,56 +79,48 @@ def getRecommendations(prefs,person,similarity=sim_pearson):
   rankings.reverse()
   return rankings
 
-def transformPrefs(prefs):
-  result={}
-  for person in prefs:
-    for item in prefs[person]:
-      result.setdefault(item,{})
-      
-      # Flip item and person
-      result[item][person]=prefs[person][item]
-  return result
 
 
-def calculateSimilarItems(prefs,n=10):
-  # Create a dictionary of items showing which other items they
-  # are most similar to.
-  result={}
-  # Invert the preference matrix to be item-centric
-  itemPrefs=transformPrefs(prefs)
-  c=0
-  for item in itemPrefs:
-    # Status updates for large datasets
-    c+=1
-    if c%100==0: print "%d / %d" % (c,len(itemPrefs))
-    # Find the most similar items to this one
-    scores=topMatches(itemPrefs,item,n=n,similarity=sim_distance)
-    result[item]=scores
-  return result
 
-def getRecommendedItems(prefs,itemMatch,user):
-  userRatings=prefs[user]
-  scores={}
-  totalSim={}
-  # Loop over items rated by this user
-  for (item,rating) in userRatings.items( ):
+# def calculateSimilarItems(prefs,n=10):
+#   # Create a dictionary of items showing which other items they
+#   # are most similar to.
+#   result={}
+#   # Invert the preference matrix to be item-centric
+#   itemPrefs=transformPrefs(prefs)
+#   c=0
+#   for item in itemPrefs:
+#     # Status updates for large datasets
+#     c+=1
+#     if c%100==0: print "%d / %d" % (c,len(itemPrefs))
+#     # Find the most similar items to this one
+#     scores=topMatches(itemPrefs,item,n=n,similarity=sim_distance)
+#     result[item]=scores
+#   return result
 
-    # Loop over items similar to this one
-    for (similarity,item2) in itemMatch[item]:
+# def getRecommendedItems(prefs,itemMatch,user):
+#   userRatings=prefs[user]
+#   scores={}
+#   totalSim={}
+#   # Loop over items rated by this user
+#   for (item,rating) in userRatings.items( ):
 
-      # Ignore if this user has already rated this item
-      if item2 in userRatings: continue
-      # Weighted sum of rating times similarity
-      scores.setdefault(item2,0)
-      scores[item2]+=similarity*rating
-      # Sum of all the similarities
-      totalSim.setdefault(item2,0)
-      totalSim[item2]+=similarity
+#     # Loop over items similar to this one
+#     for (similarity,item2) in itemMatch[item]:
 
-  # Divide each total score by total weighting to get an average
-  rankings=[(score/totalSim[item],item) for item,score in scores.items( )]
+#       # Ignore if this user has already rated this item
+#       if item2 in userRatings: continue
+#       # Weighted sum of rating times similarity
+#       scores.setdefault(item2,0)
+#       scores[item2]+=similarity*rating
+#       # Sum of all the similarities
+#       totalSim.setdefault(item2,0)
+#       totalSim[item2]+=similarity
 
-  # Return the rankings from highest to lowest
-  rankings.sort( )
-  rankings.reverse( )
-  return rankings
+#   # Divide each total score by total weighting to get an average
+#   rankings=[(score/totalSim[item],item) for item,score in scores.items( )]
+
+#   # Return the rankings from highest to lowest
+#   rankings.sort( )
+#   rankings.reverse( )
+#   return rankings
