@@ -60,6 +60,7 @@ def getRecommendations(domain1,domain2,person,similarity=sim_pearson):
 
     # ignore scores of zero or lower
     if sim<=0: continue
+    # print other,sim
     for item in domain1[other]:
 	    
       # only score movies I haven't seen yet
@@ -79,6 +80,20 @@ def getRecommendations(domain1,domain2,person,similarity=sim_pearson):
   rankings.reverse()
   return rankings
 
+def loadMovieLens(path='../movielens',file='../u1.base'):
+  # Get movie titles
+  movies={}
+  for line in open(path+'/u.item'):
+    (id,title)=line.split('|')[0:2]
+    movies[id]=title
+  
+  # Load data
+  prefs={}
+  for line in open(path+file):
+    (user,movieid,rating,ts)=line.split('\t')
+    prefs.setdefault(user,{})
+    prefs[user][movieid]=float(rating)
+  return prefs
 
 
 
