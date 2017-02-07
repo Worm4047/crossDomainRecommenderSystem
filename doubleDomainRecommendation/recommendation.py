@@ -1,7 +1,7 @@
 import csv
 from sklearn.model_selection import train_test_split
 from functions import *
-
+#hello
 if __name__=='__main__':
 
 	file = open('../movielens/u.data', 'rb')
