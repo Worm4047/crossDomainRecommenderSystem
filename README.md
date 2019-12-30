@@ -1,4 +1,4 @@
-# Recommender System
+# Cross Domain Recommendation System
    
 Basic recommendation System faces problems of cold start and data sparsity. For overcoming the shortcomings of the basic recommendation system, cross domain recommendations are used. In cross domain recommendation System, the information from other domains(source domain) is used to predict the user’s behavior in the target domain.
  
